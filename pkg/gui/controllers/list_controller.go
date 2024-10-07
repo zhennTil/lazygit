@@ -42,6 +42,28 @@ func (self *ListController) HandleNextLine() error {
 	return self.handleLineChange(1)
 }
 
+func (self *ListController) HandleGotoFirstParent() error {
+	// TODO: only apply to the LocalCommits window, or also handle the other commits types
+
+	selectedItem := self.c.Contexts().LocalCommits.GetSelected()
+
+	if selectedItem.IsFirstCommit() {
+		return nil
+	}
+
+	gotoHash := selectedItem.Parents[0]
+
+	return self.c.Refresh(types.RefreshOptions{
+		Scope: []types.RefreshableView{types.COMMITS},
+		Then: func() error {
+			if !self.c.Contexts().LocalCommits.SelectCommitByHash(gotoHash) {
+				// TODO: handle the situation where the commit is not loaded
+			}
+			return nil
+		},
+	})
+}
+
 func (self *ListController) HandleScrollLeft() error {
 	return self.scrollHorizontal(self.context.GetViewTrait().ScrollLeft)
 }
@@ -201,6 +223,7 @@ func (self *ListController) GetKeybindings(opts types.KeybindingsOpts) []*types.
 		{Tag: "navigation", Key: opts.GetKey(opts.Config.Universal.ScrollLeft), Handler: self.HandleScrollLeft},
 		{Tag: "navigation", Key: opts.GetKey(opts.Config.Universal.ScrollRight), Handler: self.HandleScrollRight},
 		{Tag: "navigation", Key: opts.GetKey(opts.Config.Universal.GotoBottom), Handler: self.HandleGotoBottom, Description: self.c.Tr.GotoBottom},
+		{Tag: "navigation", Key: opts.GetKey(opts.Config.Commits.GotoFirstParent), Handler: self.HandleGotoFirstParent},
 	}
 
 	if self.context.RangeSelectEnabled() {

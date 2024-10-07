@@ -494,6 +494,7 @@ type KeybindingCommitsConfig struct {
 	OpenInBrowser                  string `yaml:"openInBrowser"`
 	ViewBisectOptions              string `yaml:"viewBisectOptions"`
 	StartInteractiveRebase         string `yaml:"startInteractiveRebase"`
+	GotoFirstParent                string `yaml:"gotoParent"`
 }
 
 type KeybindingAmendAttributeConfig struct {
@@ -930,6 +931,7 @@ func GetDefaultConfig() *UserConfig {
 				OpenInBrowser:                  "o",
 				ViewBisectOptions:              "b",
 				StartInteractiveRebase:         "i",
+				GotoFirstParent:                "<c-b>",
 			},
 			AmendAttribute: KeybindingAmendAttributeConfig{
 				ResetAuthor: "a",
